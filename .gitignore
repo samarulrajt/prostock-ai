@@ -1,0 +1,31 @@
+# Hugging Face cache
+.hf/
+
+# Python
+__pycache__/
+*.pyc
+*.pyc~
+*.pyc~
+
+# Virtual environments
+venv/
+venv/
+.env
+
+# Hugging Face tokens
+ HF_TOKEN
+
+# Model files (these are large, can be gitignored if using Hugging Face Hub)
+pro_model.h5
+pro_scaler.pkl
+
+# Internal data
+customer_data.csv
+
+# Docker/IDE
+.dockerignore
+.vscode/
+.idea/
+
+# Environment variables
+.env

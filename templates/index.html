@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProStock AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6f5f2;
+            --surface: #ffffff;
+            --ink: #1a1a18;
+            --muted: #6b6a66;
+            --line: #e6e4de;
+            --accent: #1c3d5a;
+            --accent-hover: #152e44;
+            --up: #1f6b45;
+            --down: #a33b2a;
+            --warn-bg: #f8ece9;
+            --warn-ink: #8a3426;
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "IBM Plex Sans", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.45;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            max-width: 880px;
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 32px 24px 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page > footer {
+            margin-top: auto;
+            padding-top: 32px;
+        }
+
+        header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .brand span {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .search input {
+            flex: 1;
+            height: 44px;
+            padding: 0 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--surface);
+            color: var(--ink);
+            font: inherit;
+            font-size: 15px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .search input:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+        }
+
+        .search input::placeholder {
+            text-transform: none;
+            letter-spacing: 0;
+            color: #9a9892;
+        }
+
+        .search button {
+            height: 44px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: var(--radius);
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .search button:hover { background: var(--accent-hover); }
+        .search button:disabled { opacity: 0.65; cursor: wait; }
+
+        .alert {
+            padding: 12px 14px;
+            margin-bottom: 24px;
+            border: 1px solid #e8d4cf;
+            border-radius: var(--radius);
+            background: var(--warn-bg);
+            color: var(--warn-ink);
+            font-size: 14px;
+        }
+
+        .report {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .report-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 24px 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .identity h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .identity p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .badge {
+            align-self: flex-start;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: #eeece7;
+            color: var(--muted);
+        }
+
+        .badge.up { background: #e6f3eb; color: var(--up); }
+        .badge.down { background: #f6e8e4; color: var(--down); }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hero-block {
+            padding: 22px 24px;
+        }
+
+        .hero-block + .hero-block {
+            border-left: 1px solid var(--line);
+        }
+
+        .label {
+            margin: 0 0 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .price {
+            margin: 0;
+            font-family: "IBM Plex Mono", ui-monospace, monospace;
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+        }
+
+        .sub {
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+        .up { color: var(--up); }
+        .down { color: var(--down); }
+
+        .section {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section:last-child { border-bottom: 0; }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .metric dt {
+            margin: 0 0 4px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .metric dd {
+            margin: 0;
+            font-family: "IBM Plex Mono", ui-monospace, monospace;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .horizons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .horizon {
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        .horizon .term {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .horizon .val {
+            font-family: "IBM Plex Mono", ui-monospace, monospace;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .horizon .ci {
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .drivers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        .list li:last-child { border-bottom: 0; }
+
+        .list .k { color: var(--ink); }
+        .list .v { color: var(--muted); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; }
+
+        .desk {
+            margin: 0 0 16px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .desk.ok { border: 1px solid #1f7a4d; }
+        .desk.bad { border: 1px solid #a33; }
+        .desk.wait { border: 1px solid var(--line); color: var(--muted); }
+
+        .action-card {
+            margin: 0 0 20px;
+            padding: 18px 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            background: var(--surface);
+        }
+        .action-card.buy { border-color: #1f7a4d; background: #f3faf6; }
+        .action-card.sell { border-color: #a33b2a; background: #fbf4f2; }
+        .action-card.hold { border-color: var(--line); }
+        .action-card.blocked { border-color: #8a7a3d; background: #f7f4ea; }
+        .action-top {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .action-word {
+            margin: 0;
+            font-size: 42px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+        .action-card.buy .action-word { color: var(--up); }
+        .action-card.sell .action-word { color: var(--down); }
+        .action-card.blocked .action-word { color: #6b5a20; }
+        .stamp {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .action-card .instruction {
+            margin: 12px 0 0;
+            font-size: 15px;
+        }
+        .action-card .rule {
+            margin: 8px 0 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--line);
+        }
+        .action-grid p { margin: 0; }
+        .action-grid .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+        .action-grid .v { font-size: 14px; font-family: "IBM Plex Mono", ui-monospace, monospace; margin-top: 2px; }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--up);
+        }
+
+        .dot.off { background: #9a9892; }
+
+        .empty {
+            padding: 8px 2px 4px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .page.is-empty .search {
+            margin-top: 8vh;
+            max-width: 560px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: -16px 0 24px;
+        }
+
+        .page.is-empty .chips { max-width: 560px; }
+
+        .chip {
+            height: 28px;
+            padding: 0 10px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--surface);
+            color: var(--ink);
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .chip:hover { border-color: var(--accent); color: var(--accent); }
+        .chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        .quote {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .quote-nums { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: baseline; }
+        .quote-last {
+            font-family: "IBM Plex Mono", ui-monospace, monospace;
+            font-size: 22px;
+            font-weight: 500;
+        }
+        .quote-meta { font-size: 12px; color: var(--muted); }
+        .spark { width: 220px; height: 48px; display: block; }
+        .spark polyline { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+        .spark.up polyline { stroke: var(--up); }
+        .spark.down polyline { stroke: var(--down); }
+
+        .warn-list {
+            margin: 0;
+            padding: 0 0 0 18px;
+            font-size: 13px;
+            color: var(--warn-ink);
+        }
+        .warn-list li { margin: 4px 0; }
+
+        .news { margin: 0; padding: 0; list-style: none; }
+        .news li { padding: 10px 0; border-bottom: 1px solid var(--line); }
+        .news li:last-child { border-bottom: 0; }
+        .news a { color: var(--ink); text-decoration: none; font-size: 14px; }
+        .news a:hover { text-decoration: underline; }
+        .news .src { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
+
+        .brief {
+            font-size: 15px;
+            line-height: 1.55;
+            margin: 0;
+        }
+        .brief p { margin: 0 0 0.8em; }
+        .brief p:last-child { margin-bottom: 0; }
+
+        .metrics.six { grid-template-columns: repeat(3, 1fr); }
+
+        @media (max-width: 720px) {
+            .hero, .metrics, .horizons, .drivers, .metrics.six, .action-grid { grid-template-columns: 1fr 1fr; }
+            .quote { grid-template-columns: 1fr; }
+            .hero-block + .hero-block { border-left: 0; border-top: 1px solid var(--line); }
+            header { flex-direction: column; gap: 6px; }
+        }
+
+        @media (max-width: 520px) {
+            .search { flex-direction: column; }
+            .drivers { grid-template-columns: 1fr; }
+            .action-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page{% if not prediction %} is-empty{% endif %}">
+        <header>
+            <div class="brand">
+                <h1>ProStock AI</h1>
+                <span>Research estimates from delayed public data</span>
+            </div>
+            <div class="meta">Personal desk · next-session call</div>
+        </header>
+
+        <p class="disclaimer">{{ disclaimer }} {{ data_vendor_note }}</p>
+
+        {% if prediction and prediction.desk %}
+        {% set desk = prediction.desk %}
+        <p class="desk {% if desk.lstm_scored and desk.beats_naive %}ok{% elif desk.lstm_scored %}bad{% else %}wait{% endif %}">
+            {% if desk.lstm_scored and desk.beats_naive %}
+            LSTM out-of-sample MAE {{ desk.lstm_mae }} beat naive {{ desk.naive_mae }}{% if desk.hit_rate is not none %} · direction hit rate {{ (desk.hit_rate * 100)|round(1) }}%{% endif %}. Edge is small. Size only what you can lose; delayed Yahoo is not a live fill.
+            {% elif desk.lstm_scored %}
+            LSTM MAE {{ desk.lstm_mae }} did not beat naive zero-change ({{ desk.naive_mae }}). Desk rule: do not size a personal trade on this estimate.
+            {% else %}
+            Desk rule: run <code>python eval_lstm.py --tickers {{ ticker }}</code> so this name shows whether the LSTM beats “do nothing” before you risk capital.
+            {% endif %}
+        </p>
+        {% endif %}
+
+        <form class="search" action="/predict" method="post" id="predict-form">
+            <input
+                type="text"
+                name="ticker"
+                id="ticker-input"
+                value="{{ ticker or '' }}"
+                placeholder="AAPL, RELIANCE.NS, or ask in English"
+                required
+                autocomplete="off"
+                spellcheck="true"
+                list="ticker-suggest"
+            >
+            <datalist id="ticker-suggest">
+                {% for symbol, label in watchlist or [] %}
+                <option value="{{ symbol }}">{{ label }}</option>
+                {% endfor %}
+            </datalist>
+            <button type="submit" id="predict-btn">Analyze</button>
+        </form>
+
+        {% if watchlist %}
+        <div class="chips" aria-label="Watchlist">
+            {% for symbol, label in watchlist %}
+            <button type="button" class="chip{% if ticker == symbol %} is-active{% endif %}" data-ticker="{{ symbol }}">{{ label }}</button>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="alert" role="alert">{{ error }}</div>
+        {% endif %}
+
+        {% if prediction %}
+        {% set sent = prediction.sentiment | lower %}
+        {% set ret = prediction.mean_return | string %}
+        {% set ret_down = ret.startswith('-') %}
+        <article class="report">
+            <div class="report-head">
+                <div class="identity">
+                    <h2>{{ prediction.company_name }}</h2>
+                    <p>
+                        {{ ticker }}
+                        {% if prediction.company_sector and prediction.company_sector != "N/A" %} · {{ prediction.company_sector }}{% endif %}
+                        {% if prediction.company_industry and prediction.company_industry != "N/A" %} · {{ prediction.company_industry }}{% endif %}
+                        {% if prediction.market_cap and prediction.market_cap != "N/A" %} · Market cap {{ prediction.market_cap }}{% endif %}
+                    </p>
+                </div>
+                <span class="badge {% if 'positive' in sent %}up{% elif 'negative' in sent %}down{% endif %}">
+                    {{ prediction.sentiment }}
+                </span>
+            </div>
+
+            {% if prediction.signal %}
+            {% set sig = prediction.signal %}
+            <div class="action-card {{ sig.tone }}">
+                <div class="action-top">
+                    <p class="action-word">{{ sig.lean }}</p>
+                    <span class="stamp">{{ sig.stamp }}</span>
+                </div>
+                <p class="instruction">{{ sig.instruction }}</p>
+                <div class="action-grid">
+                    <div>
+                        <p class="k">Desk action</p>
+                        <p class="v">{{ sig.action }}</p>
+                    </div>
+                    <div>
+                        <p class="k">Horizon</p>
+                        <p class="v">Next session</p>
+                    </div>
+                    <div>
+                        <p class="k">Deadband</p>
+                        <p class="v">{{ '%.2f'|format((sig.deadband or 0) * 100) }}%</p>
+                    </div>
+                </div>
+                <p class="rule">{{ sig.rule }} You place the order. Last close is not a live fill.</p>
+            </div>
+            {% endif %}
+
+            <div class="quote">
+                <div>
+                    <p class="label">Last close (session) · {{ prediction.as_of }}</p>
+                    <div class="quote-nums">
+                        <span class="quote-last">{{ prediction.currency_symbol }} {{ prediction.last_close }}</span>
+                        <span class="mono {{ 'up' if prediction.day_up else 'down' }}">{{ prediction.day_change }} ({{ prediction.day_change_pct }})</span>
+                        {% if prediction.last_trade %}
+                        <span class="quote-meta">Last trade {{ prediction.currency_symbol }} {{ prediction.last_trade }}{% if prediction.last_trade_at %} · {{ prediction.last_trade_at }}{% endif %}</span>
+                        {% endif %}
+                        <span class="quote-meta">Vol {{ prediction.last_volume }} · {{ prediction.rel_vol }} avg</span>
+                        <span class="quote-meta">vs Nifty {{ prediction.vs_nifty }}</span>
+                    </div>
+                    {% if prediction.quote_note %}
+                    <p class="quote-meta" style="margin-top:8px;max-width:40rem">{{ prediction.quote_note }}</p>
+                    {% endif %}
+                </div>
+                {% if prediction.sparkline %}
+                <svg class="spark {{ 'up' if prediction.spark_up else 'down' }}" viewBox="0 0 240 48" role="img" aria-label="90-day close">
+                    <polyline points="{{ prediction.sparkline }}" />
+                </svg>
+                {% endif %}
+            </div>
+
+            <div class="hero">
+                <div class="hero-block">
+                    <p class="label">Model estimate · next session</p>
+                    <p class="price">{{ prediction.currency_symbol }} {{ prediction.price }}</p>
+                    <p class="sub">vs last close {{ prediction.predicted_move }} · interval {{ prediction.currency_symbol }} {{ prediction.ci_lower }} – {{ prediction.ci_upper }} (not a calibrated 95% CI)</p>
+                </div>
+                <div class="hero-block">
+                    <p class="label">Estimated return</p>
+                    <p class="price {{ 'down' if ret_down else 'up' }}">{{ prediction.mean_return }}</p>
+                    <p class="sub">Primary driver: {{ prediction.top_trust_signal }}</p>
+                </div>
+            </div>
+
+            {% if prediction.brief %}
+            <section class="section">
+                <p class="label">Research note</p>
+                <div class="brief">
+                    {% for para in prediction.brief.split('\n\n') %}
+                    {% if para.strip() %}
+                    <p>{{ para.strip() }}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="section">
+                <p class="label">Quote &amp; technicals</p>
+                <dl class="metrics six">
+                    <div class="metric"><dt>RSI 14</dt><dd>{{ prediction.rsi }}</dd></div>
+                    <div class="metric"><dt>Trend</dt><dd>{{ prediction.ma_trend }}</dd></div>
+                    <div class="metric"><dt>52-week</dt><dd>{{ prediction.low_52w }} – {{ prediction.high_52w }}</dd></div>
+                    <div class="metric"><dt>From high</dt><dd>{{ prediction.dist_from_high }}</dd></div>
+                    <div class="metric"><dt>5-day</dt><dd>{{ prediction.realized_5d }}</dd></div>
+                    <div class="metric"><dt>20-day</dt><dd>{{ prediction.realized_20d }}</dd></div>
+                    <div class="metric"><dt>Beta vs Nifty</dt><dd>{{ prediction.beta_nifty }}</dd></div>
+                    <div class="metric"><dt>Sharpe 60d</dt><dd>{{ prediction.sharpe_60d }}</dd></div>
+                    <div class="metric"><dt>P/E</dt><dd>{{ prediction.pe }}</dd></div>
+                    <div class="metric"><dt>Div. yield</dt><dd>{{ prediction.dividend_yield }}</dd></div>
+                    <div class="metric"><dt>Nifty 20d</dt><dd>{{ prediction.nifty_20d }}</dd></div>
+                    <div class="metric"><dt>USD/INR 20d</dt><dd>{{ prediction.usd_20d }}</dd></div>
+                </dl>
+                <p class="sub">{{ prediction.ma_cross }} · S&amp;P 500 20d {{ prediction.spx_20d }} · Nifty today {{ prediction.nifty_1d }}</p>
+            </section>
+
+            <section class="section">
+                <p class="label">Risk</p>
+                <dl class="metrics">
+                    <div class="metric">
+                        <dt>Annual vol</dt>
+                        <dd>{{ prediction.annual_volatility }}</dd>
+                    </div>
+                    <div class="metric">
+                        <dt>VaR 95%</dt>
+                        <dd>{{ prediction.var_95 }}</dd>
+                    </div>
+                    <div class="metric">
+                        <dt>Stop</dt>
+                        <dd>{{ prediction.stop_loss }}</dd>
+                    </div>
+                    <div class="metric">
+                        <dt>Target</dt>
+                        <dd>{{ prediction.take_profit }}</dd>
+                    </div>
+                </dl>
+                <p class="sub">{% if prediction.signal and not prediction.signal.execute %}Size: 0 — desk action is {{ prediction.signal.action }}.{% else %}Suggested size: {{ prediction.shares }} shares ({{ prediction.position_notional }}) · {{ prediction.risk_note }}{% endif %}</p>
+            </section>
+
+            {% if prediction.warnings %}
+            <section class="section">
+                <p class="label">Flags</p>
+                <ul class="warn-list">
+                    {% for note in prediction.warnings %}
+                    <li>{{ note }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+
+            {% if prediction.horizon_1_return != "N/A" %}
+            <section class="section">
+                <p class="label">Horizons</p>
+                <div class="horizons">
+                    <div class="horizon">
+                        <span class="term">1 day</span>
+                        <span class="val">{{ prediction.horizon_1_return }}</span>
+                        <span class="ci">{{ prediction.horizon_1_ci }}</span>
+                    </div>
+                    <div class="horizon">
+                        <span class="term">5 day</span>
+                        <span class="val">{{ prediction.horizon_5_return }}</span>
+                        <span class="ci">{{ prediction.horizon_5_ci }}</span>
+                    </div>
+                    <div class="horizon">
+                        <span class="term">10 day</span>
+                        <span class="val">{{ prediction.horizon_10_return }}</span>
+                        <span class="ci">{{ prediction.horizon_10_ci }}</span>
+                    </div>
+                    <div class="horizon">
+                        <span class="term">20 day</span>
+                        <span class="val">{{ prediction.horizon_20_return }}</span>
+                        <span class="ci">{{ prediction.horizon_20_ci }}</span>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="section">
+                <div class="drivers">
+                    <div>
+                        <p class="label">Feature impact</p>
+                        {% if prediction.feature_importance %}
+                        <ul class="list">
+                            {% for item in prediction.feature_importance %}
+                            <li>
+                                <span class="k">{{ item.feature }}</span>
+                                <span class="v">{{ item.impact }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="empty">No feature ranking available.</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="label">Context</p>
+                        <ul class="list">
+                            <li>
+                                <span class="k">News sentiment</span>
+                                <span class="v">{{ prediction.news_sentiment }}</span>
+                            </li>
+                            <li>
+                                <span class="k">Macro bias</span>
+                                <span class="v">{{ prediction.bias }}</span>
+                            </li>
+                            <li>
+                                <span class="k">Model</span>
+                                <span class="v">{{ prediction.model_type }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            {% if prediction.news %}
+            <section class="section">
+                <p class="label">Headlines</p>
+                <ul class="news">
+                    {% for item in prediction.news %}
+                    <li>
+                        {% if item.url %}
+                        <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                        {% else %}
+                        <span>{{ item.title }}</span>
+                        {% endif %}
+                        {% if item.publisher %}<span class="src">{{ item.publisher }}</span>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </article>
+        {% elif not error %}
+        <p class="empty">Enter a ticker. After Analyze you get a BUY, SELL, or HOLD call for the next session. Orders only when the stamp is VALIDATED.</p>
+        {% endif %}
+
+        <footer>
+            <span class="status">
+                <span class="dot{% if prediction and not prediction.session_open %} off{% endif %}"></span>
+                {% if prediction %}{{ prediction.session_label }}{% else %}Yahoo Finance · global listings{% endif %}
+            </span>
+            <span>Yahoo Finance · delayed · {{ model_id }}</span>
+        </footer>
+    </div>
+    <script>
+        var form = document.getElementById("predict-form");
+        var input = document.getElementById("ticker-input");
+        form.addEventListener("submit", function () {
+            var btn = document.getElementById("predict-btn");
+            btn.disabled = true;
+            btn.textContent = "Analyzing…";
+        });
+        document.querySelectorAll(".chip").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                input.value = btn.getAttribute("data-ticker");
+                form.requestSubmit();
+            });
+        });
+    </script>
+</body>
+</html>

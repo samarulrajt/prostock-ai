@@ -1,0 +1,195 @@
+{
+  "model_id": "prostock-lstm-v1",
+  "data_vendor": "Yahoo Finance",
+  "generated_at": "2026-08-30T20:41:14Z",
+  "note": "Baselines plus LSTM out-of-sample MAE on the last 20% of sequences. If beats_naive_on_mae is false, a zero-change forecast was closer than the LSTM on that window \u2014 do not size a personal trade on the LSTM for that name.",
+  "tickers": {
+    "AAPL": {
+      "naive_zero_return": {
+        "n": 100,
+        "mae": 0.013249,
+        "rmse": 0.018155,
+        "directional_accuracy": 0.0
+      },
+      "persistence_last_return": {
+        "n": 100,
+        "mae": 0.01989,
+        "rmse": 0.025762,
+        "directional_accuracy": 0.42
+      },
+      "test_start_index": 399,
+      "methodology": "Time-ordered split (first 80% unused for these baseline scores, last 20% tested). Target is next-session simple return. Naive predicts 0. Persistence predicts the previous session\u2019s return. No LSTM weights are used here.",
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.013078,
+          "rmse": 0.018318,
+          "directional_accuracy": 0.4625
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.013327,
+          "rmse": 0.018477,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "MSFT": {
+      "naive_zero_return": {
+        "n": 100,
+        "mae": 0.017397,
+        "rmse": 0.025581,
+        "directional_accuracy": 0.0
+      },
+      "persistence_last_return": {
+        "n": 100,
+        "mae": 0.023924,
+        "rmse": 0.033819,
+        "directional_accuracy": 0.51
+      },
+      "test_start_index": 399,
+      "methodology": "Time-ordered split (first 80% unused for these baseline scores, last 20% tested). Target is next-session simple return. Naive predicts 0. Persistence predicts the previous session\u2019s return. No LSTM weights are used here.",
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.01778,
+          "rmse": 0.02727,
+          "directional_accuracy": 0.525
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.01798,
+          "rmse": 0.027507,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "RELIANCE.NS": {
+      "naive_zero_return": {
+        "n": 100,
+        "mae": 0.009675,
+        "rmse": 0.012707,
+        "directional_accuracy": 0.0
+      },
+      "persistence_last_return": {
+        "n": 100,
+        "mae": 0.014406,
+        "rmse": 0.017889,
+        "directional_accuracy": 0.4948453608247423
+      },
+      "test_start_index": 400,
+      "methodology": "Time-ordered split (first 80% unused for these baseline scores, last 20% tested). Target is next-session simple return. Naive predicts 0. Persistence predicts the previous session\u2019s return. No LSTM weights are used here.",
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.009281,
+          "rmse": 0.012218,
+          "directional_accuracy": 0.6375
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.009183,
+          "rmse": 0.012162,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": false,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "TCS.NS": {
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.015397,
+          "rmse": 0.021591,
+          "directional_accuracy": 0.5875
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.015459,
+          "rmse": 0.021872,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "7203.T": {
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 73,
+          "mae": 0.014786,
+          "rmse": 0.019975,
+          "directional_accuracy": 0.5753424657534246
+        },
+        "naive_zero_return_same_window": {
+          "n": 73,
+          "mae": 0.015388,
+          "rmse": 0.020494,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "0700.HK": {
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 76,
+          "mae": 0.019834,
+          "rmse": 0.026258,
+          "directional_accuracy": 0.5131578947368421
+        },
+        "naive_zero_return_same_window": {
+          "n": 76,
+          "mae": 0.019551,
+          "rmse": 0.025637,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": false,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "SUZLON.NS": {
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.014286,
+          "rmse": 0.020599,
+          "directional_accuracy": 0.6455696202531646
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.014646,
+          "rmse": 0.020968,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    },
+    "RTNINDIA.NS": {
+      "lstm_walk_forward": {
+        "lstm": {
+          "n": 80,
+          "mae": 0.018791,
+          "rmse": 0.025981,
+          "directional_accuracy": 0.6
+        },
+        "naive_zero_return_same_window": {
+          "n": 80,
+          "mae": 0.018956,
+          "rmse": 0.025944,
+          "directional_accuracy": 0.0
+        },
+        "beats_naive_on_mae": true,
+        "methodology": "Same 80/20 time split on sequences: window of 60 feature rows predicts next-session simple return. No shuffling."
+      }
+    }
+  },
+  "lstm_scored_at": "2026-08-30T21:29:07Z"
+}

@@ -1,0 +1,16 @@
+pandas
+numpy
+scikit-learn
+yfinance
+matplotlib
+fastapi
+uvicorn
+jinja2>=3.1.2,<3.2
+tensorflow
+textblob
+xgboost
+optuna
+requests
+lxml
+
+

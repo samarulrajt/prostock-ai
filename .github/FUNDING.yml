@@ -1,15 +1,43 @@
-# These are supported funding model platforms
+# funding.yml for ProStock AI
+# Supported funding model platforms
 
-github: # Replace with up tao 4 GitHub Sponsors-enabled usernames e.g., [user1, user2]
-patreon: samarulrajt
-open_collective: # Replace with a single Open Collective username
-ko_fi: # Replace with a single Ko-fi username
-tidelift: # Replace with a single Tidelift platform-name/package-name e.g., npm/babel
-community_bridge: # Replace with a single Community Bridge project-name e.g., cloud-foundry
-liberapay: # Replace with a single Liberapay username
-issuehunt: # Replace with a single IssueHunt username
-lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name e.g., cloud-foundry
-polar: # Replace with a single Polar username
-buy_me_a_coffee: # Replace with a single Buy Me a Coffee username
-thanks_dev: # Replace with a single thanks.dev username
-custom: [https://github.com/samarulrajt]
+# GitHub Sponsors - up to 4 usernames
+github: [samarulrajt]
+
+# Patreon
+patreon: ProStock175
+
+# Open Collective
+open_collective: prostock-ai
+
+# Ko-fi
+ko_fi: samarulraj
+
+# Tidelift (commented out - requires setup)
+# tidelift: npm/lstm-indian-stock
+
+# Community Bridge (commented out)
+# community_bridge: cloud-foundry
+
+# Liberapay (commented out)
+# liberapay: samarulraj
+
+# IssueHunt (commented out)
+# issuehunt: samarulraj
+
+# LFX Crowdfunding (commented out)
+# lfx_crowdfunding: cloud-foundry
+
+# Polar (commented out)
+# polar: samarulraj
+
+# Buy Me a Coffee
+buy_me_a_coffee: samarulraj
+
+# Thanks Dev (commented out)
+# thanks_dev: samarulraj
+
+# Custom URLs (commented out)
+# custom:
+#   - https://samarulraj.works
+#   - https://github.com/samarulraj

@@ -1,0 +1,43 @@
+# funding.yml for ProStock AI
+# Supported funding model platforms
+
+# GitHub Sponsors - up to 4 usernames
+github: [samarulraj]
+
+# Patreon
+patreon: samarulraj
+
+# Open Collective
+open_collective: samarulraj
+
+# Ko-fi
+ko_fi: samarulraj
+
+# Tidelift (commented out - requires setup)
+# tidelift: npm/lstm-indian-stock
+
+# Community Bridge (commented out)
+# community_bridge: cloud-foundry
+
+# Liberapay (commented out)
+# liberapay: samarulraj
+
+# IssueHunt (commented out)
+# issuehunt: samarulraj
+
+# LFX Crowdfunding (commented out)
+# lfx_crowdfunding: cloud-foundry
+
+# Polar (commented out)
+# polar: samarulraj
+
+# Buy Me a Coffee
+buy_me_a_coffee: samarulraj
+
+# Thanks Dev (commented out)
+# thanks_dev: samarulraj
+
+# Custom URLs (commented out)
+# custom:
+#   - https://samarulraj.works
+#   - https://github.com/samarulraj

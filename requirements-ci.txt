@@ -1,0 +1,14 @@
+# CI and local tests without TensorFlow
+pandas
+numpy
+scikit-learn
+fastapi
+httpx
+pytest
+jinja2>=3.1.2,<3.2
+python-multipart
+joblib
+yfinance
+textblob
+requests
+lxml

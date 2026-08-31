@@ -1,0 +1,35 @@
+{
+  "id": "pingProstock001",
+  "name": "ProStock webhook ping",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prostock-ping",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "ping-wh",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "prostock-ping"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nreturn [{ json: { ok: true, echo: b, via: 'n8n' } }];"
+      },
+      "id": "ping-code",
+      "name": "Echo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Echo", "type": "main", "index": 0 }]] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}

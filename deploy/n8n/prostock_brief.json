@@ -1,0 +1,112 @@
+{
+  "id": "FkNAYw4G4PRfUWGk",
+  "name": "ProStock research brief",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-1",
+      "name": "When clicking Test workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { query: 'outlook for Apple' } }];"
+      },
+      "id": "sample-1",
+      "name": "Sample request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 220]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prostock-brief",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "prostock-brief"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst query = (b.query || b.ticker || '').toString();\nconst ticker = (b.ticker || '').toString();\nconst prediction = b.prediction || null;\nreturn [{ json: { query, ticker, prediction } }];"
+      },
+      "id": "code-in",
+      "name": "Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 80]
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://host.docker.internal:8000/api/resolve?q=' + encodeURIComponent($json.query || $json.ticker || '') }}",
+        "options": { "timeout": 30000 }
+      },
+      "id": "http-extract",
+      "name": "Ollama extract ticker",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 80]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Normalize').first().json;\nconst incoming = $input.first().json;\nlet ticker = prev.ticker || incoming.ticker || '';\nticker = (ticker || '').toUpperCase().trim();\nif (!ticker) throw new Error('Could not resolve a ticker from: ' + (prev.query || ''));\nreturn [{ json: { ...prev, ticker } }];"
+      },
+      "id": "code-ticker",
+      "name": "Parse ticker",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 80]
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://host.docker.internal:8000/api/predict/' + encodeURIComponent($json.ticker) }}",
+        "options": { "timeout": 180000 }
+      },
+      "id": "http-predict",
+      "name": "ProStock API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 80]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = $('Parse ticker').first().json;\nconst api = $input.first().json;\nconst prediction = parsed.prediction || api.prediction || null;\nif (!prediction) throw new Error(api.error || 'Prediction failed');\nreturn [{ json: { query: parsed.query, ticker: parsed.ticker, prediction } }];"
+      },
+      "id": "code-merge",
+      "name": "Merge quote",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 80]
+    },
+    {
+      "parameters": {
+        "jsCode": "const merged = $('Merge quote').first().json;\nconst p = merged.prediction || {};\nconst company = p.company_name || p.company || merged.ticker;\nconst brief = `${company} (${merged.ticker}) last closed at ${p.last_close} as of ${p.as_of}. The model estimates ${p.price || p.predicted_close} (${p.mean_return || p.expected_return}), ${p.sentiment || 'unspecified'} news tone, RSI ${p.rsi}, trend ${p.ma_trend || p.trend}. This is a model estimate, not investment advice.`;\nreturn [{ json: { ok: true, ticker: merged.ticker, brief, prediction: merged.prediction } }];"
+      },
+      "id": "http-brief",
+      "name": "Ollama research note",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1540, 80]
+    }
+  ],
+  "connections": {
+    "When clicking Test workflow": { "main": [[{ "node": "Sample request", "type": "main", "index": 0 }]] },
+    "Sample request": { "main": [[{ "node": "Normalize", "type": "main", "index": 0 }]] },
+    "Webhook": { "main": [[{ "node": "Normalize", "type": "main", "index": 0 }]] },
+    "Normalize": { "main": [[{ "node": "Ollama extract ticker", "type": "main", "index": 0 }]] },
+    "Ollama extract ticker": { "main": [[{ "node": "Parse ticker", "type": "main", "index": 0 }]] },
+    "Parse ticker": { "main": [[{ "node": "ProStock API", "type": "main", "index": 0 }]] },
+    "ProStock API": { "main": [[{ "node": "Merge quote", "type": "main", "index": 0 }]] },
+    "Merge quote": { "main": [[{ "node": "Ollama research note", "type": "main", "index": 0 }]] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}

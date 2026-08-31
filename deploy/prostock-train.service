@@ -1,0 +1,20 @@
+[Unit]
+Description=ProStock weekly model training
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prostock
+Group=prostock
+WorkingDirectory=/home/prostock/app
+Environment=PYTHONUNBUFFERED=1
+# Full-universe train can run for hours
+TimeoutStartSec=12h
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+ExecStart=/home/prostock/app/scripts/train_weekly.sh
+
+[Install]
+WantedBy=multi-user.target

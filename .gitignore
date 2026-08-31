@@ -29,3 +29,7 @@ customer_data.csv
 
 # Environment variables
 .env
+
+# Generated logs and estimates
+logs/
+*.jsonl
